@@ -1,0 +1,27 @@
+{
+  "name": "ventojs",
+  "version": "0.0.1",
+  "description": "front end library for spa development",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/IlyaPapou/ventoJS.git"
+  },
+  "keywords": [
+    "library",
+    "javaScript",
+    "spa"
+  ],
+  "author": "Ilya Popov, Tero Parviainen",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/IlyaPapou/ventoJS/issues"
+  },
+  "homepage": "https://github.com/IlyaPapou/ventoJS#readme",
+  "dependencies": {
+    "grunt": "^1.0.3"
+  }
+}
