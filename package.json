@@ -1,10 +1,11 @@
 {
   "name": "ventojs",
   "version": "0.0.1",
-  "description": "front end library for spa development",
+  "description": "front end library for spa development (AngularJS like)",
   "main": "index.js",
   "scripts": {
-    "test": "jasmine"
+    "test": "grunt test",
+    "check": "grunt check"
   },
   "repository": {
     "type": "git",
@@ -30,11 +31,13 @@
     "grunt": "^1.0.3",
     "grunt-contrib-jshint": "^2.1.0",
     "grunt-contrib-watch": "^1.1.0",
+    "grunt-karma": "^3.0.1",
     "jasmine": "^3.3.1",
     "jasmine-core": "^3.3.0",
     "jshint": "^2.10.2",
     "karma": "^4.0.1",
     "karma-browserify": "^6.0.0",
+    "karma-chrome-launcher": "^2.2.0",
     "karma-jasmine": "^2.0.1",
     "karma-jshint-preprocessor": "0.0.6",
     "karma-phantomjs-launcher": "^1.0.4",
