@@ -1,7 +1,10 @@
 module.exports = function (grunt) {
     grunt.initConfig({
         jshint: {
-            all: ['ventoJScore/**/**/*.js'],
+            all: [
+                'src/**/*.js',
+                'test/**/*.js'
+            ],
             options: {
                 globals: {
                     _: false,
@@ -22,14 +25,19 @@ module.exports = function (grunt) {
             unit: {
                 options: {
                     framework: 'jasmin2',
-                    launch_in_dev: ['PhantomJS'],
+                    launch_in_dev: ['phantomjs', 'chrome'],
+                    launch_in_ci: ['phantomjs', 'chrome'],
                     before_tests: 'grunt jshint',
                     serve_files: [
+                        'node_modules/jquery/dist/jquery.min.js',
+                        'node_modules/lodash/index.js',
                         'node_modules/sinon/pkg/sinon.js',
-                        'ventoJScore/**/**/*.js'
+                        'src/**/*.js',
+                        'test/**/*.js'
                     ],
                     watch_files: [
-                        'ventoJScore/**/**/*.js'
+                        'src/**/*.js',
+                        'test/**/*.js'
                     ]
                 }
             }
@@ -38,4 +46,5 @@ module.exports = function (grunt) {
 
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-testem');
+    grunt.registerTask('default', ['testem:run:unit']);
 };
