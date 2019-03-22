@@ -22,12 +22,17 @@ module.exports = function(grunt) {
       unit: {
         options: {
           frameworks: ['jasmine'],
-          files: ['src/**/*.js', 'test/**/*_spec.js'],
+          files: [
+            'node_modules/jquery/dist/jquery.js',
+            'node_modules/lodash/lodash.js',
+            'src/**/*.js',
+            'test/**/*_spec.js',
+          ],
           preprocessors: {
             'test/**/*.js': ['jshint'],
             'src/**/*.js': ['jshint'],
           },
-          browsers: ['PhantomJS'],
+          browsers: ['Chrome'],
           browserify: {
             debug: true,
             bundleDelay: 2000, // Fixes "reload" error messages, YMMV!

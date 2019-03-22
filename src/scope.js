@@ -8,12 +8,14 @@ function Scope() {
 }
 
 Scope.prototype.$watch = function(watchFn, listenerFn) {
-  var watcher = { watchFn, listenerFn };
+  var watcher = { watchFn: watchFn, listenerFn: listenerFn };
   this.$$watchers.push(watcher);
 };
 
-Scope.prototype.$watch = function() {
+Scope.prototype.$digest = function() {
+  var self = this;
   _.forEach(this.$$watchers, function(watcher) {
+    watcher.watchFn(self);
     watcher.listenerFn();
   });
 };
