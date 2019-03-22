@@ -1,6 +1,8 @@
 /* jshint globalstrict: true */
 'use strict';
 
+function initWatchVal() {}
+
 function Scope() {
   //prefix $$ signifies that this variable should be considered private to the AngularJS framework,
   //and shouldn't be called from application code
@@ -8,7 +10,11 @@ function Scope() {
 }
 
 Scope.prototype.$watch = function(watchFn, listenerFn) {
-  var watcher = { watchFn: watchFn, listenerFn: listenerFn };
+  var watcher = {
+    watchFn: watchFn,
+    listenerFn: listenerFn,
+    last: initWatchVal,
+  };
   this.$$watchers.push(watcher);
 };
 
@@ -23,7 +29,11 @@ Scope.prototype.$digest = function() {
 
     if (newValue !== oldValue) {
       watcher.last = newValue;
-      watcher.listenerFn(newValue, oldValue, self);
+      watcher.listenerFn(
+        newValue,
+        oldValue === initWatchVal ? newValue : oldValue,
+        self,
+      );
     }
   });
 };
