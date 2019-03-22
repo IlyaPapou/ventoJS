@@ -94,5 +94,13 @@ describe('Scope', function() {
       scope.$digest();
       expect(oldGivenValue).toBe(123);
     });
+
+    it('may have watchers that omit the listener function', function() {
+      var watchFn = jasmine.createSpy().and.returnValue('something');
+
+      scope.$watch(watchFn);
+      scope.$digest();
+      expect(watchFn).toHaveBeenCalled();
+    });
   });
 });
