@@ -11,7 +11,7 @@ function Scope() {
 
 Scope.prototype.$watch = function(watchFn, listenerFn) {
   var watcher = {
-    watchFn: watchFn,
+    watchFn,
     listenerFn: listenerFn || function() {},
     last: initWatchVal,
   };
@@ -42,8 +42,12 @@ Scope.prototype.$$digestOnce = function() {
 };
 
 Scope.prototype.$digest = function() {
-  var dirty;
+  var dirty,
+    ttl = 10;
   do {
     dirty = this.$$digestOnce();
+    if (dirty && !ttl--) {
+      throw '10 digest iterations reached';
+    }
   } while (dirty);
 };

@@ -14,6 +14,7 @@ module.exports = function(grunt) {
           afterEach: false,
           sinon: false,
         },
+        esversion: 8,
         browser: true,
         devel: true,
       },
@@ -44,6 +45,6 @@ module.exports = function(grunt) {
 
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-karma');
-  grunt.registerTask('test', ['jshint', 'karma']);
+  grunt.registerTask('test', ['karma']);
   grunt.registerTask('check', ['jshint']);
 };
