@@ -7,6 +7,7 @@ function Scope() {
   //prefix $$ signifies that this variable should be considered private to the AngularJS framework,
   //and shouldn't be called from application code
   this.$$watchers = [];
+  this.$$lastDirtyWatch = null;
 }
 
 Scope.prototype.$watch = function(watchFn, listenerFn) {
@@ -16,6 +17,7 @@ Scope.prototype.$watch = function(watchFn, listenerFn) {
     last: initWatchVal,
   };
   this.$$watchers.push(watcher);
+  this.$$lastDirtyWatch = null;
 };
 
 Scope.prototype.$$digestOnce = function() {
@@ -29,6 +31,7 @@ Scope.prototype.$$digestOnce = function() {
     oldValue = watcher.last;
 
     if (newValue !== oldValue) {
+      self.$$lastDirtyWatch = watcher;
       watcher.last = newValue;
       watcher.listenerFn(
         newValue,
@@ -36,7 +39,7 @@ Scope.prototype.$$digestOnce = function() {
         self,
       );
       dirty = true;
-    }
+    } else if (self.$$lastDirtyWatch === watcher) return false;
   });
   return dirty;
 };
@@ -44,6 +47,7 @@ Scope.prototype.$$digestOnce = function() {
 Scope.prototype.$digest = function() {
   var dirty,
     ttl = 10;
+  this.$$lastDirtyWatch = null;
   do {
     dirty = this.$$digestOnce();
     if (dirty && !ttl--) {
