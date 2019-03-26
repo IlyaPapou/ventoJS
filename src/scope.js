@@ -10,10 +10,11 @@ function Scope() {
   this.$$lastDirtyWatch = null;
 }
 
-Scope.prototype.$watch = function(watchFn, listenerFn) {
+Scope.prototype.$watch = function(watchFn, listenerFn, valueEq = false) {
   var watcher = {
     watchFn,
     listenerFn: listenerFn || function() {},
+    valueEq,
     last: initWatchVal,
   };
   this.$$watchers.push(watcher);
@@ -30,9 +31,9 @@ Scope.prototype.$$digestOnce = function() {
     newValue = watcher.watchFn(self);
     oldValue = watcher.last;
 
-    if (newValue !== oldValue) {
+    if (!self.$$areEqual(newValue, oldValue, watcher.valueEq)) {
       self.$$lastDirtyWatch = watcher;
-      watcher.last = newValue;
+      watcher.last = watcher.valueEq ? _.cloneDeep(newValue) : newValue;
       watcher.listenerFn(
         newValue,
         oldValue === initWatchVal ? newValue : oldValue,
@@ -54,4 +55,12 @@ Scope.prototype.$digest = function() {
       throw '10 digest iterations reached';
     }
   } while (dirty);
+};
+
+Scope.prototype.$$areEqual = function(newValue, oldValue, valueEq) {
+  if (valueEq) {
+    return _.isEqual(newValue, oldValue);
+  } else {
+    return newValue === oldValue;
+  }
 };
