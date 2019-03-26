@@ -185,17 +185,17 @@ describe('Scope', function() {
     });
 
     it('does not end digest so that new watches are not run', function() {
-      scope.aValue = 'abc';
+      scope.tmpValue = 'abc';
       scope.counter = 0;
 
       scope.$watch(
         function(scope) {
-          return scope.aValue;
+          return scope.tmpValue;
         },
         function(newValue, oldValue, scope) {
           scope.$watch(
             function(scope) {
-              return scope.aValue;
+              return scope.tmpValue;
             },
             function(newValue, oldValue, scope) {
               scope.counter++;
@@ -209,12 +209,12 @@ describe('Scope', function() {
     });
 
     it('compares based on value if enabled', function() {
-      scope.aValue = [1, 2, 3];
+      scope.tmpValue = [1, 2, 3];
       scope.counter = 0;
 
       scope.$watch(
         function(scope) {
-          return scope.aValue;
+          return scope.tmpValue;
         },
         function(newValue, oldValue, scope) {
           scope.counter++;
@@ -225,7 +225,7 @@ describe('Scope', function() {
       scope.$digest();
       expect(scope.counter).toBe(1);
 
-      scope.aValue.push(4);
+      scope.tmpValue.push(4);
       scope.$digest();
       expect(scope.counter).toBe(2);
     });
@@ -251,23 +251,45 @@ describe('Scope', function() {
     });
 
     it("executes $eval'ed function and returns result", function() {
-      scope.aValue = 42;
+      scope.tmpValue = 42;
 
       var result = scope.$eval(function(scope) {
-        return scope.aValue;
+        return scope.tmpValue;
       });
 
       expect(result).toBe(42);
     });
 
     it('passes the second $eval argument straight through', function() {
-      scope.aValue = 42;
+      scope.tmpValue = 42;
 
       var result = scope.$eval(function(scope, arg) {
-        return scope.aValue + arg;
+        return scope.tmpValue + arg;
       }, 2);
 
       expect(result).toBe(44);
+    });
+
+    it("executes $apply'ed function and starts the digest", function() {
+      scope.tmpValue = 'someValue';
+      scope.counter = 0;
+
+      scope.$watch(
+        function(scope) {
+          return scope.tmpValue;
+        },
+        function(newValue, oldValue, scope) {
+          scope.counter++;
+        },
+      );
+
+      scope.$digest();
+      expect(scope.counter).toBe(1);
+
+      scope.$apply(function(scope) {
+        scope.tmpValue = 'someOtherValue';
+      });
+      expect(scope.counter).toBe(2);
     });
   });
 });
