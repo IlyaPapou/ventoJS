@@ -7,8 +7,10 @@ function Scope() {
   //prefix $$ signifies that this variable should be considered private to the AngularJS framework,
   //and shouldn't be called from application code
   this.$$watchers = [];
-  this.$$lastDirtyWatch = null;
+  this.$$applyAsyncQueue = [];
   this.$$asyncQueue = [];
+  this.$$lastDirtyWatch = null;
+  this.$$applyAsyncId = null;
   this.$$phase = null;
 }
 
@@ -48,10 +50,14 @@ Scope.prototype.$$digestOnce = function() {
 };
 
 Scope.prototype.$digest = function() {
-  var dirty,
-    ttl = 10;
+  var ttl = 10;
+  var dirty;
   this.$$lastDirtyWatch = null;
   this.$beginPhase('$digest');
+  if (this.$$applyAsyncId) {
+    clearTimeout(this.$$applyAsyncId);
+    this.$$flushApplyAsync();
+  }
   do {
     while (this.$$asyncQueue.length) {
       var asyncTask = this.$$asyncQueue.shift();
@@ -59,7 +65,6 @@ Scope.prototype.$digest = function() {
     }
     dirty = this.$$digestOnce();
     if ((dirty || this.$$asyncQueue.length) && !ttl--) {
-      this.$clearPhase();
       throw '10 digest iterations reached';
     }
   } while (dirty || this.$$asyncQueue.length);
@@ -115,4 +120,23 @@ Scope.prototype.$beginPhase = function(phase) {
 
 Scope.prototype.$clearPhase = function() {
   this.$$phase = null;
+};
+
+Scope.prototype.$applyAsync = function(expr) {
+  var self = this;
+  self.$$applyAsyncQueue.push(function() {
+    self.$eval(expr);
+  });
+  if (self.$$applyAsyncId === null) {
+    self.$$applyAsyncId = setTimeout(function() {
+      self.$apply(self.$$flushApplyAsync.bind(self));
+    }, 0);
+  }
+};
+
+Scope.prototype.$$flushApplyAsync = function() {
+  while (this.$$applyAsyncQueue.length) {
+    this.$$applyAsyncQueue.shift()();
+  }
+  this.$$applyAsyncId = null;
 };
