@@ -29,10 +29,10 @@ module.exports = function(grunt) {
             'src/**/*.js',
             'test/**/*_spec.js',
           ],
-          preprocessors: {
-            'test/**/*.js': ['jshint'],
-            'src/**/*.js': ['jshint'],
-          },
+          // preprocessors: {
+          //   'test/**/*.js': ['jshint'],
+          //   'src/**/*.js': ['jshint'],
+          // },
           browsers: ['Chrome'],
           browserify: {
             debug: true,
